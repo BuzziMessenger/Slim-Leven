@@ -1,0 +1,8 @@
+Alles klaarzetten voor de update:
+git add .
+
+Een notitie maken van wat je hebt veranderd:
+git commit -m "Update Buzzi Messenger"
+
+De wijzigingen naar GitHub sturen:
+git push
