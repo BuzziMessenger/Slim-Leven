@@ -1,51 +1,34 @@
 "use client";
 
-import { useSession } from 'next-auth/react';
-import { User, LogOut } from 'lucide-react';
+import { useSession, signOut } from 'next-auth/react';
+import { LogOut, User } from 'lucide-react';
 
 export default function AuthStatus() {
-  const { data: session, status } = useSession();
+  // Veilige check vooruseSession zodat Render niet crasht tijdens de build
+  const sessionRes = useSession();
+  const session = sessionRes ? sessionRes.data : null;
+  const status = sessionRes ? sessionRes.status : "loading";
 
-  if (status === 'loading') {
-    return (
-      <div className="flex items-center justify-between bg-gray-700 rounded-lg p-3">
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-8 bg-gray-600 rounded-full animate-pulse"></div>
-          <div className="space-y-1">
-            <div className="h-3 bg-gray-600 rounded w-24 animate-pulse"></div>
-            <div className="h-2 bg-gray-600 rounded w-16 animate-pulse"></div>
-          </div>
-        </div>
-      </div>
-    );
+  if (status === "loading") {
+    return <div className="text-sm text-gray-400">Laden...</div>;
   }
 
   if (session) {
     return (
-      <div className="flex items-center justify-between bg-gray-700 rounded-lg p-3">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium">
-            {session.user.name.charAt(0).toUpperCase()}
-          </div>
-          <div>
-            <p className="font-medium text-white">{session.user.name}</p>
-            <p className="text-xs text-gray-400">{session.user.email}</p>
-          </div>
+      <div className="flex flex-col gap-2 p-2 bg-gray-800 rounded-lg">
+        <div className="flex items-center gap-2 text-sm text-gray-200">
+          <User className="h-4 w-4 text-blue-400" />
+          <span className="truncate">Hi, {session?.user?.email}</span>
         </div>
         <button
-          onClick={() => signOut({ callbackUrl: '/auth/login' })}
-          className="text-gray-400 hover:text-white transition-colors"
-          title="Uitloggen"
+          onClick={() => signOut({ callbackUrl: '/' })}
+          className="w-full bg-red-600/20 hover:bg-red-600/40 text-red-400 text-xs py-1 px-2 rounded transition-colors flex items-center justify-center gap-1"
         >
-          <LogOut className="h-5 w-5" />
+          <LogOut className="h-3 w-3" /> Uitloggen
         </button>
       </div>
     );
   }
 
-  return (
-    <div className="flex items-center justify-center bg-gray-700 rounded-lg p-3">
-      <p className="text-sm text-gray-400">Niet ingelogd</p>
-    </div>
-  );
+  return <div className="text-sm text-gray-400">Niet ingelogd</div>;
 }
