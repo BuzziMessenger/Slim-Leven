@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../auth/[...nextauth]/route';
 import mongoose from 'mongoose';
-import { connectToDatabase } from '../../../lib/db';
+import { connectToDatabase } from ../../../../lib/db; // Corrected import path (4 levels up)
 
 // Connect to MongoDB
 async function connectToDb() {
